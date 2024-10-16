@@ -2,29 +2,33 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Title } from 'react-native-paper';
-import axios from 'axios';
+import axiosInstance from '../api/axiosInstance'; // Importa tu instancia de axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [totpCode, setTotpCode] = useState(''); // Nuevo estado para el código TOTP
 
   const handleLogin = async () => {
     try {
-      // Reemplaza la URL con la de tu API de login
-      const response = await axios.post('https://tu-api.com/api/Auth/Login', {
+      // Primero intenta hacer el login
+      const response = await axiosInstance.post('Auth/Login', {
         email,
         password,
+        totpCode
       });
 
       const { token } = response.data;
       await AsyncStorage.setItem('token', token);
       navigation.replace('Home');
+
     } catch (error) {
       Alert.alert('Error', 'Credenciales inválidas.');
       console.error(error);
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -44,9 +48,16 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
         style={styles.input}
       />
-      <Button mode="contained" onPress={handleLogin}>
-        Entrar
-      </Button>
+        <TextInput
+          label="Código TOTP"
+          value={totpCode}
+          onChangeText={text => setTotpCode(text)}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <Button mode="contained" onPress={handleLogin}>
+          Login
+        </Button>
     </View>
   );
 };

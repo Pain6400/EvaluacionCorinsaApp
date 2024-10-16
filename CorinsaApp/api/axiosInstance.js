@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://tu-api.com/api/',
+  baseURL: 'https://localhost:44311/api/',
 });
 
 axiosInstance.interceptors.request.use(
