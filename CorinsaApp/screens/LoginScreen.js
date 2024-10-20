@@ -1,34 +1,34 @@
 // screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Title } from 'react-native-paper';
-import axiosInstance from '../api/axiosInstance'; // Importa tu instancia de axios
+import { TextInput, Button, Title, ActivityIndicator } from 'react-native-paper';
+import axiosInstance from '../api/axiosInstance'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, setIsLoggedIn }) => { // recibir setIsLoggedIn
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [totpCode, setTotpCode] = useState(''); // Nuevo estado para el código TOTP
+  const [totpCode, setTotpCode] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
-      // Primero intenta hacer el login
       const response = await axiosInstance.post('Auth/Login', {
         email,
         password,
-        totpCode
+        totpCode,
       });
-
       const { token } = response.data;
       await AsyncStorage.setItem('token', token);
-      navigation.replace('Home');
-
+      setLoading(false);
+      setIsLoggedIn(true); // Cambiar el estado de autenticación
     } catch (error) {
-      Alert.alert('Error', 'Credenciales inválidas.');
-      console.error(error);
+      setLoading(false);
+      Alert.alert('Error', 'Credenciales inválidas o error en el servidor.');
+      console.error('Detalles del Error:', error);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -48,16 +48,22 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
         style={styles.input}
       />
-        <TextInput
-          label="Código TOTP"
-          value={totpCode}
-          onChangeText={text => setTotpCode(text)}
-          keyboardType="numeric"
-          style={styles.input}
-        />
-        <Button mode="contained" onPress={handleLogin}>
-          Login
-        </Button>
+      <TextInput
+        label="Código TOTP"
+        value={totpCode}
+        onChangeText={text => setTotpCode(text)}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        disabled={loading}
+        style={styles.button}
+      >
+        {loading ? 'Cargando...' : 'Login'}
+      </Button>
+      {loading && <ActivityIndicator animating={true} size="small" style={styles.loading} />}
     </View>
   );
 };
@@ -70,6 +76,12 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
+  },
+  button: {
+    marginTop: 10,
+  },
+  loading: {
+    marginTop: 10,
   },
 });
 

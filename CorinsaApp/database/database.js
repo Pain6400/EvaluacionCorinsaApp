@@ -53,11 +53,7 @@ export const insertSolicitud = async (solicitud) => {
 export const getSolicitudes = async () => {
   const db = await openDB();
   
-  return new Promise((resolve, reject) => {
-    db.getAllAsync(`SELECT * FROM Solicitudes;`)
-      .then(({ rows: { _array } }) => resolve(_array))
-      .catch((err) => reject(err));
-  });
+  return await db.getAllAsync(`SELECT * FROM Solicitudes;`)
 };
 
 export const addPendingOperation = async (type, data) => {
@@ -91,3 +87,10 @@ export const removePendingOperation = async (id) => {
       .catch((err) => reject(err));
   });
 };
+
+export const removeSolicitudes = async () => {
+  const db = await openDB();
+
+  return await db.runAsync(`DELETE FROM Solicitudes`);
+};
+

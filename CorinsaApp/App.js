@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 import MainNavigator from './navigation/MainNavigator';
 import { initDB } from './database/database'; // Asegúrate de que la ruta es correcta
-console.log('initDB:', initDB); // Debería mostrar la función initDB
+
 const theme = {
   ...DefaultTheme,
   colors: {

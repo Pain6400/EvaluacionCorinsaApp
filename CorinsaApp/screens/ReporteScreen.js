@@ -1,13 +1,13 @@
-// screens/HonmeScreen.js
+// screens/ReporteScreen.js
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const HonmeScreen = () => {
+const ReporteScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home test</Text>
+      <Text>Reporte</Text>
     </View>
   );
 };
 
-export default HonmeScreen;
+export default ReporteScreen;
